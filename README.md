@@ -1,6 +1,8 @@
 ClimGrid
 ========
 
+![alt text](img/spherenino9712.jpg)
+
 `ClimGrid` is an R package for obtaining and analyzing gridded climate data and global climate oscillation indices.
 
 Additional functionality and documentation will be added soon.
