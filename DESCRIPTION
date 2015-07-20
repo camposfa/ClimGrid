@@ -1,0 +1,19 @@
+Package: ClimGrid
+Type: Package
+Title: Read and analyze gridded climate data and global oscillation indices
+Version: 1.0
+Date: 2015-03-17
+Authors@R: person("Fernando", "Campos", email = "camposfa@gmail.com",
+  role = c("aut", "cre"))
+Maintainer: Fernando Campos <camposfa@gmail.com>
+Description: Read and analyze gridded climate data and global oscillation indices
+License: CC0
+Depends:
+  R (>= 3.1.0),
+  magrittr (>= 1.5),
+Imports:
+  plyr (>= 1.8.1),
+  dplyr (>= 0.4.1),
+  lubridate (>= 1.3.3),
+  tidyr (>= 0.2.0),
+  stringr (>= 0.6.2)
