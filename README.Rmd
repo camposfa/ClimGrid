@@ -46,4 +46,4 @@ This package makes heavy use of the data manipulation packages [stringr](http://
 
 ## Vignettes
 
-[Obtaining and analyzing climate oscillation index data](Climate.md)
+[Obtaining and analyzing climate oscillation index data](OscillationIndices.md)
