@@ -1,7 +1,7 @@
 ClimGrid
 ========
 
-![alt text](img/spherenino9712.jpg) *1997-98 El Niño* *NASA/Goddard Space Flight Center* *The SeaWiFS Project and ORBIMAGE* *Scientific Visualization Studio*
+![alt text](img/spherenino9712.jpg) *1997-98 El Niño*<br> *NASA/Goddard Space Flight Center*<br> *The SeaWiFS Project and ORBIMAGE*<br> *Scientific Visualization Studio*<br>
 
 `ClimGrid` is an R package for obtaining and analyzing gridded climate data and global climate oscillation indices.
 
