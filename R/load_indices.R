@@ -5,10 +5,14 @@
 #' @param index One or more climate indices.
 #' Supported indices include.
 #' \itemize{
-#' \item Dipole Mode index ("dmi")
-#' \item Multivariate ENSO Index ("mei")
-#' \item Oceanic Niño Index ("oni")
+#' \item Niño 1+2 Monthly ERSSTv4 ("nino1.2")
+#' \item Niño 3 Monthly ERSSTv4 (""nino3")
+#' \item Niño 4 Monthly ERSSTv4 ("nino4")
+#' \item Niño 3.4 Monthly ERSSTv4 ("nino3.4")
 #' \item Southern Oscillation Index ("soi")
+#' \item Oceanic Niño Index ("oni"), same as 3-month running average in Niño 3.4
+#' \item Multivariate ENSO Index ("mei")
+#' \item Dipole Mode index ("dmi")
 #' \item Pacific Decadal Oscillation ("pdo")
 #' \item Atlantic Multidecadal Oscillation ("amo")
 #' \item North Atlantic Oscillation ("nao")
@@ -23,13 +27,13 @@ load_climate_index <- function(index){
 
   res <- list()
 
-  if("dmi" %in% index){
+  if ("dmi" %in% index) {
     message("Reading DMI data from http://www.jamstec.go.jp/frcgc/research/d1/iod/DATA/dmi.monthly.txt")
     dmi <- dplyr::tbl_df(read.table("http://www.jamstec.go.jp/frcgc/research/d1/iod/DATA/dmi.monthly.txt",
                                     header = TRUE))
     names(dmi) <- c("date_of", "west", "east", "value")
 
-    if(nrow(dmi) > 0){
+    if (nrow(dmi) > 0) {
       dmi <- dmi %>%
         dplyr::mutate(date_of = lubridate::parse_date_time2(as.character(date_of), "Y:m:d:H"),
                       index = "dmi") %>%
@@ -44,7 +48,7 @@ load_climate_index <- function(index){
     }
   }
 
-  if("mei" %in% index){
+  if ("mei" %in% index) {
 
     message("Reading MEI data from http://www.esrl.noaa.gov/psd/enso/mei/table.html")
     # Starts at 1950
@@ -53,7 +57,7 @@ load_climate_index <- function(index){
                                     skip = 12, nrows = lubridate::year(Sys.Date()) - 1950 + 1,
                                     header = TRUE, fill = TRUE))
 
-    if(nrow(mei) > 0){
+    if (nrow(mei) > 0) {
       mei <- tidyr::gather(mei, bimonth, mei, -YEAR)
 
       mei <- mei %>%
@@ -72,12 +76,12 @@ load_climate_index <- function(index){
     }
   }
 
-  if("oni" %in% index){
+  if ("oni" %in% index) {
 
     message("Reading ONI data from http://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt")
     oni <- dplyr::tbl_df(read.table("http://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt", header = TRUE))
 
-    if(nrow(oni) > 0){
+    if (nrow(oni) > 0) {
       oni$SEAS <- plyr::mapvalues(oni$SEAS,
                                   from = c("AMJ", "ASO", "DJF", "FMA",
                                            "JAS", "JFM", "JJA", "MAM",
@@ -101,7 +105,7 @@ load_climate_index <- function(index){
     }
   }
 
-  if("soi" %in% index){
+  if ("soi" %in% index) {
 
     message("Reading SOI data from ftp://ftp.bom.gov.au/anon/home/ncc/www/sco/soi/soiplaintext.html")
     # Starts in 1876
@@ -109,7 +113,7 @@ load_climate_index <- function(index){
                                     skip = 12, fill = TRUE,
                                     nrows = lubridate::year(Sys.Date()) - 1876 + 1))
 
-    if(nrow(soi) > 0){
+    if (nrow(soi) > 0) {
       soi <- dplyr::select(soi, -X)
       soi <- suppressWarnings(tidyr::gather(soi, month_of, soi, -Year))
 
@@ -131,7 +135,7 @@ load_climate_index <- function(index){
     }
   }
 
-  if("pdo" %in% index){
+  if ("pdo" %in% index) {
 
     message("Reading PDO data from http://jisao.washington.edu/pdo/PDO.latest")
 
@@ -140,7 +144,7 @@ load_climate_index <- function(index){
                                     skip = 29, header = TRUE, fill = TRUE,
                                     nrows = lubridate::year(Sys.Date()) - 1900 + 1))
 
-    if(nrow(pdo) > 0){
+    if (nrow(pdo) > 0) {
       pdo$YEAR <- stringr::str_replace_all(pdo$YEAR, stringr::fixed("*"), "")
       pdo <- tidyr::gather(pdo, month_of, value, -YEAR)
       pdo <- pdo %>%
@@ -160,7 +164,7 @@ load_climate_index <- function(index){
     }
   }
 
-  if("amo" %in% index){
+  if ("amo" %in% index) {
 
     message("Reading AMO data from http://www.esrl.noaa.gov/psd/data/correlation/amon.us.data")
 
@@ -168,7 +172,7 @@ load_climate_index <- function(index){
     amo <- dplyr::tbl_df(read.table("http://www.esrl.noaa.gov/psd/data/correlation/amon.us.data",
                                     skip = 1, fill = TRUE, nrows = lubridate::year(Sys.Date()) - 1948 + 1))
 
-    if(nrow(amo) > 0){
+    if (nrow(amo) > 0) {
       names(amo)[2:13] <- month.abb
       amo <- tidyr::gather(amo, month_of, value, -V1)
       amo <- amo %>%
@@ -188,14 +192,14 @@ load_climate_index <- function(index){
     }
   }
 
-  if("nao" %in% index){
+  if ("nao" %in% index) {
 
     message("Reading NAO data from http://www.cpc.ncep.noaa.gov/products/precip/CWlink/pna/norm.nao.monthly.b5001.current.ascii.table")
 
     nao <- dplyr::tbl_df(read.table("http://www.cpc.ncep.noaa.gov/products/precip/CWlink/pna/norm.nao.monthly.b5001.current.ascii.table",
                                     fill = TRUE))
 
-    if(nrow(nao) > 0){
+    if (nrow(nao) > 0) {
       names(nao)[2:13] <- month.abb
       nao <- tidyr::gather(nao, month_of, value, -V1)
       nao <- nao %>%
@@ -215,14 +219,14 @@ load_climate_index <- function(index){
     }
   }
 
-  if("sam" %in% index){
+  if ("sam" %in% index) {
 
     message("Reading SAM data from http://www.nerc-bas.ac.uk/public/icd/gjma/newsam.1957.2007.txt")
 
     sam <- read.table("http://www.nerc-bas.ac.uk/public/icd/gjma/newsam.1957.2007.txt",
                       header = TRUE, fill = TRUE)
 
-    if(nrow(sam) > 0){
+    if (nrow(sam) > 0) {
       sam$year_of <- row.names(sam)
       sam <- tbl_df(sam)
       names(sam)[1:12] <- month.abb
@@ -244,14 +248,14 @@ load_climate_index <- function(index){
     }
   }
 
-  if("ao" %in% index){
+  if ("ao" %in% index) {
 
     message("Reading AO data from http://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/monthly.ao.index.b50.current.ascii.table")
 
     ao <- read.table("http://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/monthly.ao.index.b50.current.ascii.table",
                      header = TRUE, fill = TRUE)
 
-    if(nrow(ao) > 0){
+    if (nrow(ao) > 0) {
       ao$year_of <- row.names(ao)
       ao <- tbl_df(ao)
       names(ao)[1:12] <- month.abb
@@ -273,14 +277,51 @@ load_climate_index <- function(index){
     }
   }
 
+  if (any(c("nino1.2", "nino3", "nino4", "nino3.4") %in% index)) {
+    message("Reading ONI data from http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii")
+    ersst <- dplyr::tbl_df(read.table("http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii", header = TRUE))
 
-  if(length(res) < length(index)){
-    known_indices <- c("dmi", "mei", "oni", "soi", "pdo", "amo", "nao", "sam", "ao")
-    errors <- index[which(index %ni% known_indices)]
-    message(paste("Unknown indices:" , paste(errors, collapse=", "), sep = " "))
+    if (nrow(ersst) > 0) {
+      names(ersst)[3:10] <- c("nino1.2_raw", "nino1.2_anom", "nino3_raw", "nino3_anom",
+                              "nino4_raw", "nino4_anom", "nino3.4_raw", "nino3.4_anom")
+
+      ersst <- ersst %>%
+        dplyr::mutate(date_of = lubridate::ymd(paste(YR, MON, "16", sep = "-"))) %>%
+        dplyr::select(-YR, -MON) %>%
+        tidyr::gather(index, value, -date_of) %>%
+        tidyr::separate(index, into = c("index", "measurement"), sep = "_") %>%
+        dplyr::filter(measurement != "raw") %>%
+        dplyr::filter(!is.na(value)) %>%
+        dplyr::arrange(date_of) %>%
+        dplyr::select(date_of, value, index)
+
+      if ("nino1.2" %in% index) {
+        res[["nino1.2"]] <- filter(ersst, index == "nino1.2")
+      }
+      if ("nino3" %in% index) {
+        res[["nino3"]] <- filter(ersst, index == "nino3")
+      }
+      if ("nino4" %in% index) {
+        res[["nino4"]] <- filter(ersst, index == "nino4")
+      }
+      if ("nino3.4" %in% index) {
+        res[["nino3.4"]] <- filter(ersst, index == "nino3.4")
+      }
+
+    }
+    else{
+      message("Error reading file.")
+    }
   }
 
-  if(length(res) == 0){
+
+  if (length(res) < length(index)) {
+    known_indices <- c("dmi", "mei", "oni", "soi", "pdo", "amo", "nao", "sam", "ao")
+    errors <- index[which(index %ni% known_indices)]
+    message(paste("Unknown indices:" , paste(errors, collapse = ", "), sep = " "))
+  }
+
+  if (length(res) == 0) {
     res = NULL
   }
 

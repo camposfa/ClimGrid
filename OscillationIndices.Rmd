@@ -23,13 +23,18 @@ vignette: >
 
 `ClimGrid` includes functions for pulling the most recent data for several large-scale climate oscillation indices from various online data repositories. Supported climate indices include:
 
-- Dipole Mode index ("dmi")
-- Multivariate ENSO Index ("mei")
-- Oceanic Niño Index ("oni")
+- Niño 1+2 Monthly ERSSTv4 ("nino1.2")
+- Niño 3 Monthly ERSSTv4 (""nino3")
+- Niño 4 Monthly ERSSTv4 ("nino4")
+- Niño 3.4 Monthly ERSSTv4 ("nino3.4")
 - Southern Oscillation Index ("soi")
+- Oceanic Niño Index ("oni"), same as 3-month running average in Niño 3.4
+- Multivariate ENSO Index ("mei")
+- Dipole Mode index ("dmi")
 - Pacific Decadal Oscillation ("pdo")
 - Atlantic Multidecadal Oscillation ("amo")
 - North Atlantic Oscillation ("nao")
+- Southern Annular Mode ("sam")
 
 The function `load_climate_index` returns a named list of monthly climate index data. Each element of the list is an object of class `dplyr::tbl_df`.
 

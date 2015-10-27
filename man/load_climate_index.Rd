@@ -10,10 +10,14 @@ load_climate_index(index)
 \item{index}{One or more climate indices.
 Supported indices include.
 \itemize{
-\item Dipole Mode index ("dmi")
-\item Multivariate ENSO Index ("mei")
-\item Oceanic Niño Index ("oni")
+\item Niño 1+2 Monthly ERSSTv4 ("nino1.2")
+\item Niño 3 Monthly ERSSTv4 (""nino3")
+\item Niño 4 Monthly ERSSTv4 ("nino4")
+\item Niño 3.4 Monthly ERSSTv4 ("nino3.4")
 \item Southern Oscillation Index ("soi")
+\item Oceanic Niño Index ("oni"), same as 3-month running average in Niño 3.4
+\item Multivariate ENSO Index ("mei")
+\item Dipole Mode index ("dmi")
 \item Pacific Decadal Oscillation ("pdo")
 \item Atlantic Multidecadal Oscillation ("amo")
 \item North Atlantic Oscillation ("nao")
