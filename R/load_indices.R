@@ -53,9 +53,17 @@ load_climate_index <- function(index){
     message("Reading MEI data from http://www.esrl.noaa.gov/psd/enso/mei/table.html")
     # Starts at 1950
     # Read in current year - 1950 + 1 lines
-    mei <- dplyr::tbl_df(read.table("http://www.esrl.noaa.gov/psd/enso/mei/table.html",
-                                    skip = 12, nrows = lubridate::year(Sys.Date()) - 1950 + 1,
-                                    header = TRUE, fill = TRUE))
+#     mei <- dplyr::tbl_df(read.table("http://www.esrl.noaa.gov/psd/enso/mei/table.html",
+#                                     skip = 12, nrows = lubridate::year(Sys.Date()) - 1950 + 1,
+#                                     header = TRUE, fill = TRUE))
+
+    mei_names <- read.table("http://www.esrl.noaa.gov/psd/enso/mei/table.html",
+                            skip = 12, nrows = 1, header = FALSE)
+
+    mei <- suppressWarnings(dplyr::tbl_df(data.table::fread("http://www.esrl.noaa.gov/psd/enso/mei/table.html", header = FALSE,
+                                         skip = 12, showProgress = FALSE, data.table = FALSE)))
+
+    names(mei) <- as.matrix(mei_names[1, ])
 
     if (nrow(mei) > 0) {
       mei <- tidyr::gather(mei, bimonth, mei, -YEAR)
@@ -109,16 +117,18 @@ load_climate_index <- function(index){
 
     message("Reading SOI data from ftp://ftp.bom.gov.au/anon/home/ncc/www/sco/soi/soiplaintext.html")
     # Starts in 1876
-    soi <- dplyr::tbl_df(read.delim("ftp://ftp.bom.gov.au/anon/home/ncc/www/sco/soi/soiplaintext.html",
-                                    skip = 12, fill = TRUE,
-                                    nrows = lubridate::year(Sys.Date()) - 1876 + 1))
+#     soi <- dplyr::tbl_df(read.delim("ftp://ftp.bom.gov.au/anon/home/ncc/www/sco/soi/soiplaintext.html",
+#                                     skip = 12, fill = TRUE,
+#                                     nrows = lubridate::year(Sys.Date()) - 1876 + 1))
+
+    soi <- dplyr::tbl_df(read.table("https://climatedataguide.ucar.edu/sites/default/files/SOI.signal.txt"))
+    names(soi) <- c("Year", month.abb)
 
     if (nrow(soi) > 0) {
-      soi <- dplyr::select(soi, -X)
       soi <- suppressWarnings(tidyr::gather(soi, month_of, soi, -Year))
 
       soi <- soi %>%
-        dplyr::filter(soi != "*") %>%
+        dplyr::filter(soi != "-99.9") %>%
         dplyr::mutate(date_of = lubridate::ymd(paste(Year,
                                                      as.numeric(month_of),
                                                      "16", sep = "-")),
@@ -140,9 +150,18 @@ load_climate_index <- function(index){
     message("Reading PDO data from http://jisao.washington.edu/pdo/PDO.latest")
 
     # Starts 1900
-    pdo <- dplyr::tbl_df(read.table("http://jisao.washington.edu/pdo/PDO.latest",
-                                    skip = 29, header = TRUE, fill = TRUE,
-                                    nrows = lubridate::year(Sys.Date()) - 1900 + 1))
+#     pdo <- dplyr::tbl_df(read.table("http://jisao.washington.edu/pdo/PDO.latest",
+#                                     skip = 29, header = TRUE, fill = TRUE,
+#                                     nrows = lubridate::year(Sys.Date()) - 1900 + 1))
+
+    pdo_names <- read.table("http://jisao.washington.edu/pdo/PDO.latest",
+                            skip = 29, nrows = 1, header = FALSE)
+
+    pdo <- suppressWarnings(dplyr::tbl_df(data.table::fread("http://jisao.washington.edu/pdo/PDO.latest", header = FALSE,
+                                                            showProgress = FALSE, data.table = FALSE,
+                                                            skip = 29)))
+
+    names(pdo) <- as.matrix(pdo_names[1, ])
 
     if (nrow(pdo) > 0) {
       pdo$YEAR <- stringr::str_replace_all(pdo$YEAR, stringr::fixed("*"), "")
@@ -168,9 +187,11 @@ load_climate_index <- function(index){
 
     message("Reading AMO data from http://www.esrl.noaa.gov/psd/data/correlation/amon.us.data")
 
+    amo_yrs <- read.table("http://www.esrl.noaa.gov/psd/data/correlation/amon.us.data",
+                          nrows = 1)
     # Starts 1948
     amo <- dplyr::tbl_df(read.table("http://www.esrl.noaa.gov/psd/data/correlation/amon.us.data",
-                                    skip = 1, fill = TRUE, nrows = lubridate::year(Sys.Date()) - 1948 + 1))
+                                    skip = 1, fill = TRUE, nrows = amo_yrs$V2 - amo_yrs$V1 + 1))
 
     if (nrow(amo) > 0) {
       names(amo)[2:13] <- month.abb
