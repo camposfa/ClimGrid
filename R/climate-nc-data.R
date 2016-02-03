@@ -6,9 +6,9 @@ extract_nc_values <- function(x, sites, x_var, y_var, t_var, v_var,
 
   sites <- dplyr::mutate(sites, lat_ind = 0, lon_ind = 0)
 
-  longitude <- ncdf4::ncvar_get(t, varid = x_var)
-  latitude <- ncdf4::ncvar_get(t, varid = y_var)
-  time <- ncdf4::ncvar_get(t, varid = t_var)
+  longitude <- ncdf4::ncvar_get(x, varid = x_var)
+  latitude <- ncdf4::ncvar_get(x, varid = y_var)
+  time <- ncdf4::ncvar_get(x, varid = t_var)
 
   inds_lon <- (1:dim(longitude))
   inds_lat <- (1:dim(latitude))
