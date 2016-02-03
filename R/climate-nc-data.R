@@ -1,8 +1,8 @@
 #' Read a nc grid at specific sites
 #' @export
 extract_nc_values <- function(x, sites, x_var, y_var, t_var, v_var,
-                              convert_0_to_360 = FALSE, t_unit = "days",
-                              t_origin) {
+                               convert_0_to_360 = FALSE, t_unit = "days",
+                               t_origin) {
 
   sites <- dplyr::mutate(sites, lat_ind = 0, lon_ind = 0)
 
@@ -47,14 +47,17 @@ extract_nc_values <- function(x, sites, x_var, y_var, t_var, v_var,
     res_sites_f <- res_sites_f %>%
       dplyr::mutate(date_of = t_origin + lubridate::hours(t_step))
   }
+  else if (t_unit == "date_decimal") {
+    res_sites_f <- res_sites_f %>%
+      dplyr::mutate(date_of = lubridate::date_decimal(t_step))
+  }
 
   res_sites_f <- res_sites_f %>%
     dplyr::mutate(year_of = lubridate::year(date_of),
                   month_of = lubridate::month(date_of),
                   v_var = as.numeric(v_var)) %>%
-    select(site, date_of, year_of, month_of, v_var)
+    dplyr::select(site, date_of, year_of, month_of, v_var)
 
   return(res_sites_f)
 
 }
-
