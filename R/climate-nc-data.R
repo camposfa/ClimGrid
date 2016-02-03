@@ -8,7 +8,13 @@ extract_nc_values <- function(x, sites, x_var, y_var, t_var, v_var,
 
   longitude <- ncdf4::ncvar_get(x, varid = x_var)
   latitude <- ncdf4::ncvar_get(x, varid = y_var)
-  time <- ncdf4::ncvar_get(x, varid = t_var)
+
+  if (t_unit == "monthly") {
+    time <- 1:12
+  }
+  else {
+    time <- ncdf4::ncvar_get(x, varid = t_var)
+  }
 
   inds_lon <- (1:dim(longitude))
   inds_lat <- (1:dim(latitude))
@@ -52,11 +58,13 @@ extract_nc_values <- function(x, sites, x_var, y_var, t_var, v_var,
       dplyr::mutate(date_of = lubridate::date_decimal(t_step))
   }
 
-  res_sites_f <- res_sites_f %>%
-    dplyr::mutate(year_of = lubridate::year(date_of),
-                  month_of = lubridate::month(date_of),
-                  v_var = as.numeric(v_var)) %>%
-    dplyr::select(site, date_of, year_of, month_of, v_var)
+  if (t_unit != "monthly") {
+    res_sites_f <- res_sites_f %>%
+      dplyr::mutate(year_of = lubridate::year(date_of),
+                    month_of = lubridate::month(date_of),
+                    v_var = as.numeric(v_var)) %>%
+      dplyr::select(site, date_of, year_of, month_of, v_var)
+  }
 
   return(res_sites_f)
 
