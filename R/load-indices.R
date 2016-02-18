@@ -117,9 +117,9 @@ load_climate_index <- function(index){
 
     message("Reading SOI data from ftp://ftp.bom.gov.au/anon/home/ncc/www/sco/soi/soiplaintext.html")
     # Starts in 1876
-#     soi <- dplyr::tbl_df(read.delim("ftp://ftp.bom.gov.au/anon/home/ncc/www/sco/soi/soiplaintext.html",
-#                                     skip = 12, fill = TRUE,
-#                                     nrows = lubridate::year(Sys.Date()) - 1876 + 1))
+    # soi <- dplyr::tbl_df(read.delim("ftp://ftp.bom.gov.au/anon/home/ncc/www/sco/soi/soiplaintext.html",
+    #                                 skip = 12, fill = TRUE,
+    #                                 nrows = lubridate::year(Sys.Date()) - 1876 + 1))
 
     soi <- dplyr::tbl_df(read.table("https://climatedataguide.ucar.edu/sites/default/files/SOI.signal.txt"))
     names(soi) <- c("Year", month.abb)
@@ -129,9 +129,10 @@ load_climate_index <- function(index){
 
       soi <- soi %>%
         dplyr::filter(soi != "-99.9") %>%
-        dplyr::mutate(date_of = lubridate::ymd(paste(Year,
-                                                     as.numeric(month_of),
-                                                     "16", sep = "-")),
+        dplyr::mutate(date_of = lubridate::parse_date_time(paste(Year,
+                                                                 month_of,
+                                                                 "16", sep = "-"),
+                                                           orders = "%Y-%b-%d"),
                       value = as.numeric(soi),
                       index = "soi") %>%
         dplyr::filter(!is.na(value)) %>%
@@ -167,9 +168,10 @@ load_climate_index <- function(index){
       pdo$YEAR <- stringr::str_replace_all(pdo$YEAR, stringr::fixed("*"), "")
       pdo <- tidyr::gather(pdo, month_of, value, -YEAR)
       pdo <- pdo %>%
-        dplyr::mutate(date_of = lubridate::ymd(paste(YEAR,
-                                                     as.numeric(month_of),
-                                                     "16", sep = "-")),
+        dplyr::mutate(date_of = lubridate::parse_date_time(paste(YEAR,
+                                                                 month_of,
+                                                                 "16", sep = "-"),
+                                                           orders = "%Y-%b-%d"),
                       value = as.numeric(value),
                       index = "pdo") %>%
         dplyr::filter(!is.na(value)) %>%
@@ -197,9 +199,10 @@ load_climate_index <- function(index){
       names(amo)[2:13] <- month.abb
       amo <- tidyr::gather(amo, month_of, value, -V1)
       amo <- amo %>%
-        dplyr::mutate(date_of = lubridate::ymd(paste(V1,
-                                                     as.numeric(month_of),
-                                                     "16", sep = "-")),
+        dplyr::mutate(date_of = lubridate::parse_date_time(paste(V1,
+                                                                 month_of,
+                                                                 "16", sep = "-"),
+                                                           orders = "%Y-%b-%d"),
                       value = as.numeric(value),
                       index = "amo") %>%
         dplyr::filter(value != -99.990) %>%
@@ -224,9 +227,10 @@ load_climate_index <- function(index){
       names(nao)[2:13] <- month.abb
       nao <- tidyr::gather(nao, month_of, value, -V1)
       nao <- nao %>%
-        dplyr::mutate(date_of = lubridate::ymd(paste(V1,
-                                                     as.numeric(month_of),
-                                                     "16", sep = "-")),
+        dplyr::mutate(date_of = lubridate::parse_date_time(paste(V1,
+                                                                 month_of,
+                                                                 "16", sep = "-"),
+                                                           orders = "%Y-%b-%d"),
                       value = as.numeric(value),
                       index = "nao") %>%
         dplyr::filter(!is.na(value)) %>%
@@ -254,9 +258,10 @@ load_climate_index <- function(index){
       sam <- tidyr::gather(sam, month_of, value, -year_of)
 
       sam <- sam %>%
-        dplyr::mutate(date_of = lubridate::ymd(paste(year_of,
-                                                     as.numeric(month_of),
-                                                     "16", sep = "-")),
+        dplyr::mutate(date_of = lubridate::parse_date_time(paste(year_of,
+                                                                 month_of,
+                                                                 "16", sep = "-"),
+                                                           orders = "%Y-%b-%d"),
                       index = "sam") %>%
         dplyr::filter(!is.na(value)) %>%
         dplyr::arrange(date_of) %>%
@@ -283,9 +288,10 @@ load_climate_index <- function(index){
       ao <- tidyr::gather(ao, month_of, value, -year_of)
 
       ao <- ao %>%
-        dplyr::mutate(date_of = lubridate::ymd(paste(year_of,
-                                                     as.numeric(month_of),
-                                                     "16", sep = "-")),
+        dplyr::mutate(date_of = lubridate::parse_date_time(paste(year_of,
+                                                                 month_of,
+                                                                 "16", sep = "-"),
+                                                           orders = "%Y-%b-%d"),
                       index = "ao") %>%
         dplyr::filter(!is.na(value)) %>%
         dplyr::arrange(date_of) %>%
