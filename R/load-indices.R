@@ -150,16 +150,16 @@ load_climate_index <- function(index){
     message("Reading PDO data from http://jisao.washington.edu/pdo/PDO.latest")
 
     # Starts 1900
-#     pdo <- dplyr::tbl_df(read.table("http://jisao.washington.edu/pdo/PDO.latest",
-#                                     skip = 29, header = TRUE, fill = TRUE,
-#                                     nrows = lubridate::year(Sys.Date()) - 1900 + 1))
+    pdo <- dplyr::tbl_df(read.table("http://jisao.washington.edu/pdo/PDO.latest",
+                                    skip = 29, header = TRUE, fill = TRUE,
+                                    nrows = lubridate::year(Sys.Date()) - 1900 + 1))
 
     pdo_names <- read.table("http://jisao.washington.edu/pdo/PDO.latest",
                             skip = 29, nrows = 1, header = FALSE)
 
-    pdo <- suppressWarnings(dplyr::tbl_df(data.table::fread("http://jisao.washington.edu/pdo/PDO.latest", header = FALSE,
-                                                            showProgress = FALSE, data.table = FALSE,
-                                                            skip = 29)))
+    # pdo <- suppressWarnings(dplyr::tbl_df(data.table::fread("http://jisao.washington.edu/pdo/PDO.latest", header = FALSE,
+    #                                                         showProgress = FALSE, data.table = FALSE,
+    #                                                         skip = 29)))
 
     names(pdo) <- as.matrix(pdo_names[1, ])
 
