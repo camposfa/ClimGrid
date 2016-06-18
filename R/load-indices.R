@@ -305,7 +305,7 @@ load_climate_index <- function(index){
   }
 
   if (any(c("nino1.2", "nino3", "nino4", "nino3.4") %in% index)) {
-    message("Reading ONI data from http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii")
+    message("Reading Niño data from http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii")
     ersst <- dplyr::tbl_df(read.table("http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii", header = TRUE))
 
     if (nrow(ersst) > 0) {
@@ -313,7 +313,7 @@ load_climate_index <- function(index){
                               "nino4_raw", "nino4_anom", "nino3.4_raw", "nino3.4_anom")
 
       ersst <- ersst %>%
-        dplyr::mutate(date_of = lubridate::ymd(paste(YR, MON, "16", sep = "-")), tz = "UTC") %>%
+        dplyr::mutate(date_of = lubridate::ymd(paste(YR, MON, "16", sep = "-"), tz = "UTC")) %>%
         dplyr::select(-YR, -MON) %>%
         tidyr::gather(index, value, -date_of) %>%
         tidyr::separate(index, into = c("index", "measurement"), sep = "_") %>%
