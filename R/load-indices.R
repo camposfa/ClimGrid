@@ -71,7 +71,7 @@ load_climate_index <- function(index){
       mei <- mei %>%
         dplyr::rename(year_of = YEAR, value = mei) %>%
         dplyr::mutate(date_of = substr(mei$bimonth, start = 4, stop = 6),
-                      date_of = lubridate::ymd(paste(year_of, date_of, "01", sep = "-")),
+                      date_of = lubridate::ymd(paste(year_of, date_of, "01", sep = "-"), tz = "UTC"),
                       index = "mei") %>%
         dplyr::filter(!is.na(value)) %>%
         dplyr::arrange(date_of) %>%
@@ -99,7 +99,7 @@ load_climate_index <- function(index){
                                          "6", "12", "11", "10"))
 
       oni <- oni %>%
-        dplyr::mutate(date_of = lubridate::ymd(paste(YR, SEAS, "16", sep = "-")),
+        dplyr::mutate(date_of = lubridate::ymd(paste(YR, SEAS, "16", sep = "-"), tz = "UTC"),
                       value = ANOM,
                       index = "oni") %>%
         dplyr::filter(!is.na(value)) %>%
@@ -313,7 +313,7 @@ load_climate_index <- function(index){
                               "nino4_raw", "nino4_anom", "nino3.4_raw", "nino3.4_anom")
 
       ersst <- ersst %>%
-        dplyr::mutate(date_of = lubridate::ymd(paste(YR, MON, "16", sep = "-"))) %>%
+        dplyr::mutate(date_of = lubridate::ymd(paste(YR, MON, "16", sep = "-")), tz = "UTC") %>%
         dplyr::select(-YR, -MON) %>%
         tidyr::gather(index, value, -date_of) %>%
         tidyr::separate(index, into = c("index", "measurement"), sep = "_") %>%
